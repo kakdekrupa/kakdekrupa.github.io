@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Diploma in Computer Engineering & IoT</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #f5f0e8;
+  --paper: #faf7f2;
+  --ink: #1a1714;
+  --ink-soft: #3d3830;
+  --ink-muted: #8a8070;
+  --amber: #e8820c;
+  --amber-light: #fdf0e0;
+  --amber-dim: rgba(232,130,12,0.12);
+  --rule: rgba(26,23,20,0.1);
+  --green: #2d7a4f;
+  --red: #c94040;
+  --blue: #2b5ea7;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Grain texture */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 1000; opacity: 1;
+}
+
+/* Custom cursor */
+.cur { position: fixed; pointer-events: none; z-index: 9999; }
+.cur-dot { width: 8px; height: 8px; background: var(--amber); border-radius: 50%; transform: translate(-50%,-50%); transition: transform .1s; }
+.cur-ring { width: 32px; height: 32px; border: 1.5px solid var(--amber); border-radius: 50%; transform: translate(-50%,-50%); opacity: 0.4; transition: width .2s, height .2s, opacity .2s; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.25rem 6vw;
+  background: rgba(245,240,232,0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--rule);
+}
+.nav-mark {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--amber);
+}
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-muted);
+  text-decoration: none; transition: color .2s;
+}
+.nav-links a:hover { color: var(--amber); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh; display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center; gap: 0;
+  padding: 0 6vw; padding-top: 80px;
+  position: relative; overflow: hidden;
+}
+
+/* Ruled lines background */
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(
+    transparent, transparent 39px,
+    var(--rule) 39px, var(--rule) 40px
+  );
+  pointer-events: none;
+}
+
+.hero-left { position: relative; z-index: 2; padding-right: 4vw; }
+
+.hero-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 400;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--amber);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 1.75rem;
+  opacity: 0; animation: up .7s .1s forwards;
+}
+.hero-eyebrow::before { content: '//'; color: var(--ink-muted); }
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 5.5vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  opacity: 0; animation: up .8s .25s forwards;
+}
+h1 em {
+  font-style: italic; color: var(--amber);
+  display: block;
+}
+
+.hero-sub {
+  margin-top: 2rem;
+  font-size: 1rem; line-height: 1.75;
+  color: var(--ink-soft); max-width: 420px;
+  opacity: 0; animation: up .7s .45s forwards;
+  font-weight: 400;
+}
+
+.hero-badges {
+  margin-top: 2.25rem;
+  display: flex; flex-wrap: wrap; gap: 10px;
+  opacity: 0; animation: up .7s .6s forwards;
+}
+.badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 6px 14px;
+  border: 1px solid var(--rule);
+  background: white;
+  color: var(--ink-soft);
+  border-radius: 2px;
+}
+
+.hero-right {
+  position: relative; z-index: 2;
+  display: flex; justify-content: flex-end; align-items: center;
+}
+
+/* Notebook card */
+.notebook {
+  background: white;
+  border: 1px solid var(--rule);
+  padding: 2rem;
+  width: 100%; max-width: 380px;
+  box-shadow: 6px 6px 0 var(--amber-dim), 12px 12px 0 rgba(26,23,20,0.04);
+  position: relative;
+  opacity: 0; animation: up .9s .4s forwards;
+}
+.notebook::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--amber);
+}
+.nb-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-muted); margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem; border-bottom: 1px solid var(--rule);
+}
+.nb-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 0.55rem 0; border-bottom: 1px solid var(--rule);
+}
+.nb-row:last-child { border-bottom: none; }
+.nb-key {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--ink-muted);
+}
+.nb-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  color: var(--ink);
+  text-align: right;
+}
+.nb-val.amber { color: var(--amber); }
+.nb-val.green { color: var(--green); }
+
+/* ── DIVIDER ── */
+.divider {
+  border: none; border-top: 1px solid var(--rule);
+  margin: 0;
+}
+.section-rule {
+  display: flex; align-items: center; gap: 1.5rem;
+  padding: 0 6vw;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--cream);
+  height: 52px;
+  overflow: hidden;
+}
+.rule-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-muted); white-space: nowrap;
+}
+.rule-track {
+  display: flex; gap: 2.5rem;
+  animation: marquee 22s linear infinite;
+  white-space: nowrap;
+}
+.rule-item {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--ink-muted);
+  display: flex; align-items: center; gap: 8px;
+}
+.rule-item::before { content: '◆'; font-size: 6px; color: var(--amber); }
+
+/* ── SECTIONS ── */
+section { padding: 6rem 6vw; position: relative; }
+section:nth-child(even) { background: var(--cream); }
+
+.s-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 0.5rem;
+}
+.s-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 700; letter-spacing: -0.02em;
+  color: var(--ink); margin-bottom: 3.5rem;
+}
+.s-title span { font-style: italic; color: var(--amber); }
+
+/* ── PROJECTS ── */
+.projects-list { display: flex; flex-direction: column; gap: 0; }
+
+.proj {
+  display: grid; grid-template-columns: 80px 1fr auto;
+  gap: 0 2rem; align-items: start;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--rule);
+  cursor: none;
+  transition: background .2s;
+  position: relative;
+}
+.proj::before {
+  content: ''; position: absolute; left: -6vw; right: -6vw; top: 0; bottom: 0;
+  background: var(--amber-dim); opacity: 0; transition: opacity .2s;
+  pointer-events: none;
+}
+.proj:hover::before { opacity: 1; }
+.proj:first-child { border-top: 1px solid var(--rule); }
+
+.proj-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem; font-weight: 900; font-style: italic;
+  color: var(--rule); line-height: 1;
+  transition: color .2s;
+}
+.proj:hover .proj-num { color: var(--amber); }
+
+.proj-body {}
+.proj-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 0.75rem; }
+.proj-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 3px 9px; border: 1px solid var(--rule);
+  color: var(--ink-muted); background: white; border-radius: 1px;
+}
+.proj-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem; font-weight: 700;
+  color: var(--ink); margin-bottom: 0.6rem; line-height: 1.25;
+}
+.proj-desc {
+  font-size: 0.875rem; line-height: 1.75; color: var(--ink-soft);
+  max-width: 560px;
+}
+.proj-proof {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--amber); text-decoration: none;
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 0.6rem; transition: gap .2s;
+}
+.proj-proof::after { content: '↗'; }
+.proj-proof:hover { gap: 10px; }
+
+.proj-meta {
+  text-align: right; padding-top: 4px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.proj-platform {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+/* ── COMPETENCY MATRIX (interactive) ── */
+#skills { background: var(--paper); }
+
+.matrix-wrap { overflow-x: auto; }
+.matrix {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.875rem;
+}
+.matrix th {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--ink-muted); font-weight: 500;
+  padding: 12px 16px; text-align: left;
+  border-bottom: 2px solid var(--ink);
+  white-space: nowrap;
+}
+.matrix td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: middle;
+  line-height: 1.4;
+}
+.matrix tr { transition: background .15s; cursor: default; }
+.matrix tr:hover td { background: var(--amber-dim); }
+.matrix .td-tech {
+  font-weight: 500; color: var(--ink);
+  font-size: 0.875rem;
+}
+.matrix .td-domain {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--ink-muted);
+  letter-spacing: 0.05em;
+}
+
+/* skill bar */
+.skill-bar-wrap { display: flex; align-items: center; gap: 10px; }
+.skill-bar {
+  height: 4px; background: var(--rule);
+  border-radius: 2px; flex: 1; min-width: 80px; overflow: hidden;
+}
+.skill-fill {
+  height: 100%; border-radius: 2px;
+  background: var(--amber);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .8s cubic-bezier(.16,1,.3,1);
+}
+.skill-bar.animating .skill-fill { transform: scaleX(1); }
+.skill-label-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-muted); white-space: nowrap;
+}
+.skill-label-text.beg { color: var(--blue); }
+.skill-label-text.beg-int { color: var(--green); }
+.skill-label-text.int { color: var(--amber); }
+
+/* layer chips */
+.layer { display: inline-flex; align-items: center; gap: 5px; }
+.layer-dot { width: 6px; height: 6px; border-radius: 50%; }
+.layer-dot.sw { background: var(--blue); }
+.layer-dot.sys { background: var(--green); }
+.layer-dot.hw { background: var(--amber); }
+.layer-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* ── MULTI-LAYER SECTION ── */
+.layer-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 2px; margin-top: 3rem;
+}
+.layer-card {
+  padding: 2.5rem 2rem;
+  border: 1px solid var(--rule);
+  position: relative; overflow: hidden;
+  transition: border-color .25s;
+}
+.layer-card:hover { border-color: var(--amber); }
+.layer-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+}
+.layer-card.sw::after { background: var(--blue); }
+.layer-card.sys::after { background: var(--green); }
+.layer-card.hw::after { background: var(--amber); }
+.lc-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+.lc-label.sw { color: var(--blue); }
+.lc-label.sys { color: var(--green); }
+.lc-label.hw { color: var(--amber); }
+.lc-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;
+}
+.lc-items { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.lc-items li {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--ink-soft);
+  display: flex; align-items: center; gap: 8px;
+}
+.lc-items li::before { content: '—'; color: var(--rule); }
+
+/* ── WHAT MAKES ME DIFFERENT ── */
+.diff-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--rule); border: 1px solid var(--rule);
+  margin-top: 3rem;
+}
+.diff-item {
+  background: var(--paper); padding: 2.5rem;
+  position: relative; overflow: hidden;
+  transition: background .2s;
+}
+.diff-item:hover { background: var(--amber-light); }
+.diff-icon {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  color: var(--amber); letter-spacing: 0.1em;
+  text-transform: uppercase; margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.diff-icon::before { content: ''; display: block; width: 20px; height: 1px; background: var(--amber); }
+.diff-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem; font-weight: 700;
+  margin-bottom: 0.75rem; line-height: 1.25;
+}
+.diff-text {
+  font-size: 0.875rem; line-height: 1.75;
+  color: var(--ink-soft);
+}
+
+/* ── REFLECTION ── */
+#reflection {
+  background: var(--ink); color: var(--cream);
+}
+#reflection .s-label { color: var(--amber); }
+#reflection .s-title { color: var(--cream); }
+
+.blockquote {
+  border-left: 3px solid var(--amber);
+  padding-left: 2rem;
+  margin-bottom: 3rem;
+}
+.blockquote p {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  font-style: italic; line-height: 1.75;
+  color: var(--cream);
+}
+
+.contact-row {
+  display: flex; align-items: center; gap: 3rem;
+  padding-top: 3rem; border-top: 1px solid rgba(245,240,232,0.15);
+}
+.contact-row p {
+  font-size: 0.9rem; line-height: 1.7; color: rgba(245,240,232,0.6);
+  max-width: 380px;
+}
+.contact-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--ink); background: var(--amber);
+  padding: 1rem 2rem; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 10px;
+  transition: gap .2s, background .2s; white-space: nowrap;
+  cursor: none;
+}
+.contact-btn::after { content: '→'; }
+.contact-btn:hover { background: #f0920f; gap: 16px; }
+
+/* ── FOOTER ── */
+footer {
+  padding: 1.5rem 6vw;
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid var(--rule);
+  background: var(--ink);
+}
+footer span {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 0.1em;
+  color: rgba(245,240,232,0.3);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Scroll reveal */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s, transform .7s; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* Responsive */
+@media (max-width: 880px) {
+  .hero { grid-template-columns: 1fr; padding-top: 100px; gap: 3rem; }
+  .hero-right { justify-content: flex-start; }
+  .layer-grid { grid-template-columns: 1fr; }
+  .diff-grid { grid-template-columns: 1fr; }
+  .proj { grid-template-columns: 50px 1fr; }
+  .proj-meta { display: none; }
+  .nav-links { display: none; }
+  .contact-row { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<div class="cur" id="curDot"><div class="cur-dot"></div></div>
+<div class="cur" id="curRing"><div class="cur-ring"></div></div>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-mark">CE &amp; IoT ∙ Portfolio</span>
+  <ul class="nav-links">
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#standout">Standout</a></li>
+    <li><a href="#reflection">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-left">
+    <div class="s-label">Diploma Student · Computer Engineering &amp; IoT</div>
+    <h1>
+      Building Systems
+      <em>That Think.</em>
+    </h1>
+    <p class="hero-sub">
+      I work at the intersection of hardware, software, and networks — designing embedded systems and IoT solutions, from sensor circuits to MQTT-driven automation. Simulation-first, real-world-focused.
+    </p>
+    <div class="hero-badges">
+      <span class="badge">ESP32</span>
+      <span class="badge">Arduino</span>
+      <span class="badge">Python</span>
+      <span class="badge">MQTT</span>
+      <span class="badge">SQL</span>
+      <span class="badge">Wokwi</span>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="notebook">
+      <div class="nb-label">Student Profile</div>
+      <div class="nb-row">
+        <span class="nb-key">programme</span>
+        <span class="nb-val">Diploma · CE &amp; IoT</span>
+      </div>
+      <div class="nb-row">
+        <span class="nb-key">focus</span>
+        <span class="nb-val amber">Embedded + Networks</span>
+      </div>
+      <div class="nb-row">
+        <span class="nb-key">projects_built</span>
+        <span class="nb-val">3</span>
+      </div>
+      <div class="nb-row">
+        <span class="nb-key">tech_layers</span>
+        <span class="nb-val">Hardware · System · Software</span>
+      </div>
+      <div class="nb-row">
+        <span class="nb-key">simulator</span>
+        <span class="nb-val">Wokwi · TinkerCAD · Packet Tracer</span>
+      </div>
+      <div class="nb-row">
+        <span class="nb-key">status</span>
+        <span class="nb-val green">Active Learner ●</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS MARQUEE -->
+<div class="section-rule">
+  <span class="rule-label">Tech Stack</span>
+  <div style="overflow:hidden;flex:1;">
+    <div class="rule-track">
+      <span class="rule-item">Python</span>
+      <span class="rule-item">Arduino C</span>
+      <span class="rule-item">MQTT Protocol</span>
+      <span class="rule-item">ESP32</span>
+      <span class="rule-item">DHT22 Sensor</span>
+      <span class="rule-item">HC-SR04 Ultrasonic</span>
+      <span class="rule-item">LDR</span>
+      <span class="rule-item">L293D Motor Driver</span>
+      <span class="rule-item">I2C LCD</span>
+      <span class="rule-item">SQL</span>
+      <span class="rule-item">NumPy · Pandas</span>
+      <span class="rule-item">VS Code</span>
+      <span class="rule-item">Cisco Packet Tracer</span>
+      <span class="rule-item">Wokwi</span>
+      <span class="rule-item">TinkerCAD</span>
+      <span class="rule-item">Python</span>
+      <span class="rule-item">Arduino C</span>
+      <span class="rule-item">MQTT Protocol</span>
+      <span class="rule-item">ESP32</span>
+      <span class="rule-item">DHT22 Sensor</span>
+      <span class="rule-item">HC-SR04 Ultrasonic</span>
+      <span class="rule-item">LDR</span>
+      <span class="rule-item">L293D Motor Driver</span>
+      <span class="rule-item">I2C LCD</span>
+      <span class="rule-item">SQL</span>
+      <span class="rule-item">NumPy · Pandas</span>
+      <span class="rule-item">VS Code</span>
+      <span class="rule-item">Cisco Packet Tracer</span>
+      <span class="rule-item">Wokwi</span>
+      <span class="rule-item">TinkerCAD</span>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="s-label">Work</div>
+  <h2 class="s-title">Projects &amp; <span>Evidence</span></h2>
+
+  <div class="projects-list">
+
+    <!-- P2 -->
+    <div class="proj reveal">
+      <div class="proj-num">01</div>
+      <div class="proj-body">
+        <div class="proj-tags">
+          <span class="proj-tag">Arduino</span>
+          <span class="proj-tag">DHT22</span>
+          <span class="proj-tag">I2C LCD</span>
+          <span class="proj-tag">Alert System</span>
+        </div>
+        <div class="proj-name">IoT Sensor Monitor with Alert System</div>
+        <p class="proj-desc">
+          Real-time temperature and humidity monitor with a three-state visual and audio alert system. DHT22 readings displayed on a 16×2 I2C LCD; a green/yellow/red LED status model reacts to threshold logic (35°C / 80% RH triggers buzzer). Shows hardware-software co-design: sensor polling, display management, and conditional I/O in a single loop.
+        </p>
+        <a href="https://wokwi.com/projects/457936765876854785" target="_blank" class="proj-proof">Live Simulation</a>
+      </div>
+      <div class="proj-meta">
+        <span class="proj-platform">Wokwi · Arduino</span>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="proj reveal">
+      <div class="proj-num">02</div>
+      <div class="proj-body">
+        <div class="proj-tags">
+          <span class="proj-tag">ESP32</span>
+          <span class="proj-tag">HC-SR04</span>
+          <span class="proj-tag">Ultrasonic</span>
+          <span class="proj-tag">Distance Sensing</span>
+        </div>
+        <div class="proj-name">Smart Parking Slot Detector</div>
+        <p class="proj-desc">
+          Proximity-based parking detection using HC-SR04 ultrasonic ranging on ESP32. Generates 10µs trigger pulses, times the echo return, converts to centimetres, and triggers a red/green indicator with occupancy status over Serial — refreshed every second. Demonstrates timed pulse I/O and real-time decision logic at the hardware level.
+        </p>
+        <a href="https://wokwi.com/projects/457496166838005761" target="_blank" class="proj-proof">Live Simulation</a>
+      </div>
+      <div class="proj-meta">
+        <span class="proj-platform">Wokwi · ESP32</span>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="proj reveal">
+      <div class="proj-num">03</div>
+      <div class="proj-body">
+        <div class="proj-tags">
+          <span class="proj-tag">Arduino</span>
+          <span class="proj-tag">LDR</span>
+          <span class="proj-tag">Analog Input</span>
+          <span class="proj-tag">Control Loop</span>
+        </div>
+        <div class="proj-name">Automated Street Light System</div>
+        <p class="proj-desc">
+          LDR-based closed-loop ambient light control: reads ADC voltage from an LDR voltage divider, compares against a calibrated threshold (600), and switches the LED automatically. A clean implementation of analog sensing → digital decision, the foundation of every reactive embedded system.
+        </p>
+        <a href="https://wokwi.com/projects/446813031938055169" target="_blank" class="proj-proof">Live Simulation</a>
+      </div>
+      <div class="proj-meta">
+        <span class="proj-platform">Wokwi · Arduino</span>
+      </div>
+    </div>
+
+
+  </div>
+</section>
+
+<!-- MULTI-LAYER THINKING -->
+<section id="standout" style="background: var(--cream);">
+  <div class="s-label">Multi-Layer Exposure</div>
+  <h2 class="s-title">Not Just Code —<br><span>Three Layers Deep</span></h2>
+  <p style="max-width:560px; color: var(--ink-soft); font-size:.95rem; line-height:1.8; margin-top:-2rem; margin-bottom:0;">
+    Most students at diploma level focus on one layer. The work here spans three, which is what makes an IoT engineer — not just a programmer.
+  </p>
+
+  <div class="layer-grid">
+    <div class="layer-card sw reveal">
+      <div class="lc-label sw">Software Layer</div>
+      <div class="lc-title">Code &amp; Data</div>
+      <ul class="lc-items">
+        <li>Python — functions, modules, NumPy, Pandas</li>
+        <li>SQL — table design, queries, date functions</li>
+        <li>JavaScript — browser extension development</li>
+        <li>Modular, reusable code structure</li>
+      </ul>
+    </div>
+    <div class="layer-card sys reveal">
+      <div class="lc-label sys">System Layer</div>
+      <div class="lc-title">Networks &amp; Protocols</div>
+      <ul class="lc-items">
+        <li>MQTT publish-subscribe architecture</li>
+        <li>WiFi stack management on ESP32</li>
+        <li>IoT broker communication (HiveMQ)</li>
+        <li>Cisco Packet Tracer simulation</li>
+      </ul>
+    </div>
+    <div class="layer-card hw reveal">
+      <div class="lc-label hw">Hardware Layer</div>
+      <div class="lc-title">Circuits &amp; Sensors</div>
+      <ul class="lc-items">
+        <li>Sensor interfacing — DHT22, HC-SR04, LDR</li>
+        <li>Actuator control — LEDs, buzzer, DC motor</li>
+        <li>Motor driver integration (L293D)</li>
+        <li>Wokwi &amp; TinkerCAD circuit simulation</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETENCY MATRIX -->
+<section id="skills">
+  <div class="s-label">Technical Depth</div>
+  <h2 class="s-title">Competency <span>Matrix</span></h2>
+
+  <div class="matrix-wrap reveal">
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th>Technology</th>
+          <th>Layer</th>
+          <th style="min-width:200px;">Proficiency</th>
+          <th>Evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="td-tech">Python Programming</span><br><span class="td-domain">Functions · Modules · Packages</span></td>
+          <td><span class="layer"><span class="layer-dot sw"></span><span class="layer-text">Software</span></span></td>
+          <td>
+            <div class="skill-bar-wrap">
+              <div class="skill-bar" data-level="0.65"><div class="skill-fill"></div></div>
+              <span class="skill-label-text int">Intermediate</span>
+            </div>
+          </td>
+          <td style="font-size:.8rem; color: var(--ink-soft);">math, operator, NumPy, Pandas</td>
+        </tr>
+        <tr>
+          <td><span class="td-tech">IoT System Design</span><br><span class="td-domain">Simulation · Architecture</span></td>
+          <td><span class="layer"><span class="layer-dot hw"></span><span class="layer-text">Hardware</span></span></td>
+          <td>
+            <div class="skill-bar-wrap">
+              <div class="skill-bar" data-level="0.62"><div class="skill-fill"></div></div>
+              <span class="skill-label-text beg-int">Beg–Int</span>
+            </div>
+          </td>
+          <td style="font-size:.8rem; color: var(--ink-soft);">Smart Home, Parking, Street Light</td>
+        </tr>
+        <tr>
+          <td><span class="td-tech">MQTT Protocol</span><br><span class="td-domain">Pub–Sub · Broker · Topics</span></td>
+          <td><span class="layer"><span class="layer-dot sys"></span><span class="layer-text">System</span></span></td>
+          <td>
+            <div class="skill-bar-wrap">
+              <div class="skill-bar" data-level="0.42"><div class="skill-fill"></div></div>
+              <span class="skill-label-text beg">Beginner</span>
+            </div>
+          </td>
+          <td style="font-size:.8rem; color: var(--ink-soft);">HiveMQ broker, 3-topic subscription</td>
+        </tr>
+        <tr>
+          <td><span class="td-tech">Arduino / Embedded C</span><br><span class="td-domain">GPIO · Timers · I2C</span></td>
+          <td><span class="layer"><span class="layer-dot hw"></span><span class="layer-text">Hardware</span></span></td>
+          <td>
+            <div class="skill-bar-wrap">
+              <div class="skill-bar" data-level="0.55"><div class="skill-fill"></div></div>
+              <span class="skill-label-text beg-int">Beg–Int</span>
+            </div>
+          </td>
+          <td style="font-size:.8rem; color: var(--ink-soft);">Sensor reads, actuator control, LCD</td>
+        </tr>
+        <tr>
+          <td><span class="td-tech">SQL Database</span><br><span class="td-domain">DDL · DML · Date Functions</span></td>
+          <td><span class="layer"><span class="layer-dot sw"></span><span class="layer-text">Software</span></span></td>
+          <td>
+            <div class="skill-bar-wrap">
+              <div class="skill-bar" data-level="0.55"><div class="skill-fill"></div></div>
+              <span class="skill-label-text beg-int">Beg–Int</span>
+            </div>
+          </td>
+          <td style="font-size:.8rem; color: var(--ink-soft);">SYSDATE, ADD_MONTHS, LAST_DAY</td>
+        </tr>
+        <tr>
+          <td><span class="td-tech">Circuit Simulation</span><br><span class="td-domain">Wokwi · TinkerCAD</span></td>
+          <td><span class="layer"><span class="layer-dot hw"></span><span class="layer-text">Hardware</span></span></td>
+          <td>
+            <div class="skill-bar-wrap">
+              <div class="skill-bar" data-level="0.68"><div class="skill-fill"></div></div>
+              <span class="skill-label-text int">Intermediate</span>
+            </div>
+          </td>
+          <td style="font-size:.8rem; color: var(--ink-soft);">All 4 embedded projects</td>
+        </tr>
+        <tr>
+          <td><span class="td-tech">Web Extension Dev</span><br><span class="td-domain">HTML · JS · Manifest</span></td>
+          <td><span class="layer"><span class="layer-dot sw"></span><span class="layer-text">Software</span></span></td>
+          <td>
+            <div class="skill-bar-wrap">
+              <div class="skill-bar" data-level="0.35"><div class="skill-fill"></div></div>
+              <span class="skill-label-text beg">Beginner</span>
+            </div>
+          </td>
+          <td style="font-size:.8rem; color: var(--ink-soft);">Functional extension built &amp; debugged</td>
+        </tr>
+        <tr>
+          <td><span class="td-tech">Debugging &amp; Troubleshooting</span><br><span class="td-domain">Circuit · Code · Runtime</span></td>
+          <td><span class="layer"><span class="layer-dot sys"></span><span class="layer-text">System</span></span></td>
+          <td>
+            <div class="skill-bar-wrap">
+              <div class="skill-bar" data-level="0.65"><div class="skill-fill"></div></div>
+              <span class="skill-label-text int">Intermediate</span>
+            </div>
+          </td>
+          <td style="font-size:.8rem; color: var(--ink-soft);">Across all projects</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- WHAT MAKES ME DIFFERENT -->
+<section style="background: var(--cream);">
+  <div class="s-label">Differentiators</div>
+  <h2 class="s-title">What Makes This<br><span>Portfolio Different</span></h2>
+
+  <div class="diff-grid">
+    <div class="diff-item reveal">
+      <div class="diff-icon">Simulation-First</div>
+      <div class="diff-heading">Prototype Before you Solder</div>
+      <p class="diff-text">Every circuit is designed and validated in Wokwi or TinkerCAD before touching physical hardware. This mirrors professional embedded development workflows where simulation catches 80% of bugs before fabrication.</p>
+    </div>
+    <div class="diff-item reveal">
+      <div class="diff-icon">Protocol Depth</div>
+      <div class="diff-heading">MQTT, Not Just "WiFi Connected"</div>
+      <p class="diff-text">Working directly with MQTT broker topics, subscriber callbacks, and reconnect logic — not just using a library blindly. Understanding why pub-sub exists and what it solves is a level most diploma students never reach.</p>
+    </div>
+    <div class="diff-item reveal">
+      <div class="diff-icon">Multi-Tool Fluency</div>
+      <div class="diff-heading">Five Tools, Real Workflows</div>
+      <p class="diff-text">VS Code, Wokwi, TinkerCAD, Cisco Packet Tracer, and browser dev tools — not as checked boxes, but as instruments used to actually build and debug live projects. Tool fluency separates engineers from students.</p>
+    </div>
+    <div class="diff-item reveal">
+      <div class="diff-icon">Honest Self-Assessment</div>
+      <div class="diff-heading">Knows What It Doesn't Know</div>
+      <p class="diff-text">The competency matrix is honest — beginner is beginner, intermediate is intermediate. This self-awareness is exactly what strong engineers demonstrate; it signals someone who will grow fast rather than overpromise and underdeliver.</p>
+    </div>
+  </div>
+</section>
+
+<!-- REFLECTION / CONTACT -->
+<section id="reflection">
+  <div class="s-label">Reflection</div>
+  <h2 class="s-title">Engineering <span>Thinking</span></h2>
+
+  <div class="blockquote">
+    <p>
+      "Working across hardware simulation, communication protocols, and software development taught me something that no single course could — that every connected system is a negotiation between physics, logic, and timing. The most interesting bugs live at those boundaries."
+    </p>
+  </div>
+
+  <div class="contact-row">
+    <p>
+      I'm actively looking for internship opportunities in IoT, embedded systems, or engineering software. If you're building something interesting in connected technology, I'd like to connect.
+    </p>
+    <div style="display:flex; flex-direction:column; gap:12px; align-items:flex-start;">
+      <a href="https://www.linkedin.com/in/krupa-kakde-613167387" target="_blank" class="contact-btn" style="background: var(--amber);">Connect on LinkedIn ↗</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Krupa Kakde · Diploma in Computer Engineering &amp; IoT</span>
+  <span>
+    <a href="https://www.linkedin.com/in/krupa-kakde-613167387" target="_blank" style="color:rgba(245,240,232,0.4); text-decoration:none; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:0.1em;">linkedin.com/in/krupa-kakde-613167387</a>
+  </span>
+</footer>
+
+<!-- SCRIPTS -->
+<script>
+// Cursor
+const dot = document.querySelector('#curDot .cur-dot');
+const ring = document.querySelector('#curRing .cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.parentElement.style.left = mx+'px';
+  dot.parentElement.style.top = my+'px';
+});
+(function animRing(){
+  rx += (mx-rx)*0.1; ry += (my-ry)*0.1;
+  ring.parentElement.style.left = rx+'px';
+  ring.parentElement.style.top = ry+'px';
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('a, .proj, .diff-item, .layer-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    ring.style.width='52px'; ring.style.height='52px'; ring.style.opacity='0.8';
+  });
+  el.addEventListener('mouseleave', () => {
+    ring.style.width='32px'; ring.style.height='32px'; ring.style.opacity='0.4';
+  });
+});
+
+// Scroll reveal
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// Skill bar animation
+const barObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      const bars = e.target.querySelectorAll('.skill-bar');
+      bars.forEach(bar => {
+        const level = parseFloat(bar.dataset.level);
+        bar.querySelector('.skill-fill').style.width = (level*100)+'%';
+        // small delay trick — just add animating class
+        setTimeout(() => bar.classList.add('animating'), 80);
+      });
+    }
+  });
+}, { threshold: 0.2 });
+const matrixWrap = document.querySelector('.matrix-wrap');
+if(matrixWrap) barObs.observe(matrixWrap);
+</script>
+</body>
+</html>
