@@ -12,3 +12,8 @@ The portfolio focuses on **embedded systems, IoT communication, and software dev
 View the live portfolio here:
 
 https://kakdekrupa.github.io
+
+## Projects
+- https://wokwi.com/projects/457936765876854785
+- https://wokwi.com/projects/457496166838005761
+- https://wokwi.com/projects/446813031938055169
